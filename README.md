@@ -1,4 +1,4 @@
-# Persistent Vehivle HP Bars
+# Persistent Vehicle HP Bars
 
 ## 📜 Description
 
