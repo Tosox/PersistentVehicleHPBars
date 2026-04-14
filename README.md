@@ -12,9 +12,14 @@ always displays the HP bars for vehicles.
 3. Add `PersistentVehicleHPBars.dll` to `CoHModSDKLoader.ini`
 4. Start the game
 
+## 🎥 Preview
+
+| [![](https://ytcards.demolab.com/?id=ZUhIe0UCkCo&title=Persistent+Vehicle+HP+Bars+Demo&timestamp=1776160854&width=700 "Persistent Vehicle HP Bars Demo")](https://www.youtube.com/watch?v=ZUhIe0UCkCo) |
+|---|
+
 ## 🛠️ Building
 
-If you want to build the mod yourself, open the solution in Visual Studio 2022 and build `Release|x86`.
+If you want to build the mod yourself, open the solution in Visual Studio and build `Release|x86`.
 
 ## 📄 License
 
