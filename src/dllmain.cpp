@@ -18,6 +18,7 @@ namespace {
     using WidgetSetVisibleFn = void(__thiscall*)(void*, bool);
 
     VehicleDecoratorUpdateFn oFnVehicleDecoratorUpdate = nullptr;
+    void* tVehicleDecoratorVeterancyHide = nullptr;
 
     void SetWidgetVisible(void* widget, bool visible) {
         if (!widget) {
@@ -47,11 +48,12 @@ namespace {
             return false;
         }
 
-        auto* const tVehicleDecoratorVeterancyHide = reinterpret_cast<unsigned char*>(tVehicleDecoratorVeterancyHideResult.value());
+        tVehicleDecoratorVeterancyHide = reinterpret_cast<void*>(tVehicleDecoratorVeterancyHideResult.value());
         ModSDK::Memory::PatchMemory(
             tVehicleDecoratorVeterancyHide,
             kVehicleDecoratorVeterancyHidePatchedBytes,
-            sizeof(kVehicleDecoratorVeterancyHidePatchedBytes));
+            sizeof(kVehicleDecoratorVeterancyHidePatchedBytes)
+        );
 
         const auto tVehicleDecoratorUpdateResult = ModSDK::Memory::FindPattern("WW2Mod.dll", kVehicleDecoratorUpdatePattern);
         if (!tVehicleDecoratorUpdateResult.has_value()) {
@@ -68,33 +70,31 @@ namespace {
             return false;
         }
 
-        if (!ModSDK::Hooks::EnableHook(tVehicleDecoratorUpdate)) {
-            ModSDK::Dialogs::ShowError("Failed to enable VehicleDecorator::Update hook");
-            return false;
-        }
-
         return true;
     }
 
     bool OnInitialize() {
-        return true;
-    }
-
-    bool OnModsLoaded() {
         return SetupHook();
     }
 
-    void OnShutdown() {}
+    void OnShutdown() {
+		if (tVehicleDecoratorVeterancyHide != nullptr) {
+            ModSDK::Memory::PatchMemory(
+                tVehicleDecoratorVeterancyHide,
+                kVehicleDecoratorVeterancyHideOriginalBytes,
+                sizeof(kVehicleDecoratorVeterancyHideOriginalBytes)
+            );
+        }
+    }
 
     const CoHModSDKModuleV1 kModule = {
         .abiVersion = COHMODSDK_ABI_VERSION,
         .size = sizeof(CoHModSDKModuleV1),
         .modId = "de.tosox.persistentvehiclehpbars",
         .name = "Persistent Vehicle HP Bars",
-        .version = "1.1.1",
+        .version = "1.2.0",
         .author = "Tosox",
         .OnInitialize = &OnInitialize,
-        .OnModsLoaded = &OnModsLoaded,
         .OnShutdown = &OnShutdown
     };
 }
